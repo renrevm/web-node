@@ -16,3 +16,10 @@ app.get(/^(?!\/api).*/, (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Servidor corriendo en puerto", PORT));
+
+
+// PRUEBA GET MENSAJES
+app.get("/api/mensajes", async (req, res) => {
+  const [rows] = await pool.query("SELECT * FROM mensajes");
+  res.json(rows);
+});
