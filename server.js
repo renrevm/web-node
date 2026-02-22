@@ -17,8 +17,12 @@ app.get("/api/mensajes", async (req, res) => {
     const [rows] = await pool.query("SELECT * FROM mensajes ORDER BY id DESC");
     res.json(rows);
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Error consultando MySQL" });
+    console.error("MYSQL ERROR /api/mensajes:", e); // 👈 clave
+    res.status(500).json({
+      error: "Error consultando MySQL",
+      code: e.code,
+      message: e.message
+    });
   }
 });
 
@@ -31,8 +35,8 @@ app.post("/api/mensajes", async (req, res) => {
     const [r] = await pool.query("INSERT INTO mensajes(texto) VALUES(?)", [texto]);
     res.json({ ok: true, id: r.insertId });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Error insertando en MySQL" });
+    console.error("MYSQL ERROR /api/mensajes POST:", e);
+    res.status(500).json({ error: "Error insertando en MySQL", code: e.code, message: e.message });
   }
 });
 
