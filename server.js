@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const pool = require("./src/db");
-{"error":"Error consultando MySQL","code":"ER_ACCESS_DENIED_ERROR","message":"Access denied for user ''@'::1' (using password: NO)"}
+
 const app = express();
 
 app.use(express.json());
@@ -29,8 +29,8 @@ app.get("/api/envcheck", (req, res) => {
     DB_HOST: process.env.DB_HOST || null,
     DB_PORT: process.env.DB_PORT || null,
     DB_NAME: process.env.DB_NAME || null,
-    DB_USER_present: !!process.env.DB_USER,
-    DB_PASS_present: !!process.env.DB_PASS
+    DB_USER: process.env.DB_USER ? "(present)" : null,
+    DB_PASS: process.env.DB_PASS ? "(present)" : null
   });
 });
 
