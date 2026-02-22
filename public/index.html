@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mi Web Node</title>
+</head>
+<body>
+
+<h1>🚀 Mi primera Web App Node</h1>
+
+<button onclick="probar()">Probar API</button>
+
+<pre id="resultado"></pre>
+
+<script>
+async function probar() {
+  const res = await fetch("/api/health");
+  const data = await res.json();
+  document.getElementById("resultado").innerText =
+    JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>
