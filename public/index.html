@@ -1,42 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mi Web Node</title>
 </head>
 <body>
 
-<h1>🚀 Mi primera Web App Node</h1>
+  <h1>🚀 Mi primera Web App Node</h1>
 
-<button onclick="probar()">Probar API</button>
+  <button id="btnHealth">Probar API</button>
+  <pre id="resultado"></pre>
 
-<pre id="resultado"></pre>
+  <hr>
 
-<script>
-async function probar() {
-  const res = await fetch("/api/health");
-  const data = await res.json();
-  document.getElementById("resultado").innerText =
-    JSON.stringify(data, null, 2);
-}
-</script>
+  <h2>Guardar mensaje</h2>
+  <input id="txt" placeholder="Escribe un mensaje" />
+  <button id="btnGuardar">Guardar</button>
+  <pre id="out"></pre>
+
+  <script>
+    document.getElementById("btnHealth").onclick = async () => {
+      const res = await fetch("/api/health");
+      const data = await res.json();
+      document.getElementById("resultado").innerText = JSON.stringify(data, null, 2);
+    };
+
+    document.getElementById("btnGuardar").onclick = async () => {
+      const texto = document.getElementById("txt").value;
+      const res = await fetch("/api/mensajes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ texto })
+      });
+      document.getElementById("out").innerText = await res.text();
+    };
+  </script>
 
 </body>
 </html>
-
-<hr>
-<h2>Guardar mensaje</h2>
-<input id="txt" placeholder="Escribe un mensaje" />
-<button id="btn">Guardar</button>
-<pre id="out"></pre>
-
-<script>
-document.getElementById("btn").onclick = async () => {
-  const texto = document.getElementById("txt").value;
-  const res = await fetch("/api/mensajes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ texto })
-  });
-  document.getElementById("out").innerText = await res.text();
-};
-</script>
