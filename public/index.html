@@ -22,3 +22,21 @@ async function probar() {
 
 </body>
 </html>
+
+<hr>
+<h2>Guardar mensaje</h2>
+<input id="txt" placeholder="Escribe un mensaje" />
+<button id="btn">Guardar</button>
+<pre id="out"></pre>
+
+<script>
+document.getElementById("btn").onclick = async () => {
+  const texto = document.getElementById("txt").value;
+  const res = await fetch("/api/mensajes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ texto })
+  });
+  document.getElementById("out").innerText = await res.text();
+};
+</script>
