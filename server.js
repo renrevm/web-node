@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const pool = require("./src/db");
-
+{"error":"Error consultando MySQL","code":"ER_ACCESS_DENIED_ERROR","message":"Access denied for user ''@'::1' (using password: NO)"}
 const app = express();
 
 app.use(express.json());
