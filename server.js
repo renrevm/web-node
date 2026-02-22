@@ -1,5 +1,6 @@
 
 console.log("SERVER.JS cargado OK");
+console.log("BOOT SERVER:", new Date().toISOString());
 process.on("uncaughtException", (err) => console.error("uncaughtException:", err));
 process.on("unhandledRejection", (err) => console.error("unhandledRejection:", err));
 
