@@ -1,12 +1,25 @@
 const express = require("express");
 const path = require("path");
+const pool = require("./src/db");
 
 const app = express();
 
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", mensaje: "Servidor funcionando 🚀" });
+});
+
+// ✅ PRUEBA GET MENSAJES
+app.get("/api/mensajes", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM mensajes");
+    res.json(rows);
+  } catch (e) {
+    console.error("MYSQL ERROR /api/mensajes:", e);
+    res.status(500).json({ error: "Error consultando MySQL", code: e.code, message: e.message });
+  }
 });
 
 // ✅ Express 5: usar REGEX (no "*" ni "/*")
@@ -16,10 +29,3 @@ app.get(/^(?!\/api).*/, (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Servidor corriendo en puerto", PORT));
-
-
-// PRUEBA GET MENSAJES
-app.get("/api/mensajes", async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM mensajes");
-  res.json(rows);
-});
