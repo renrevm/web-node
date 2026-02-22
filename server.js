@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const pool = require("./src/db");
+const pool = require("./src/db.js");
 
 const app = express();
 
