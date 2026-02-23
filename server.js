@@ -22,6 +22,20 @@ app.get("/api/mensajes", async (req, res) => {
   }
 });
 
+// ✅ PRUEBA POST MENSAJES
+app.post("/api/mensajes", async (req, res) => {
+  try {
+    const texto = (req.body?.texto || "").trim();
+    if (!texto) return res.status(400).json({ error: "texto requerido" });
+
+    const [r] = await pool.query("INSERT INTO mensajes(texto) VALUES(?)", [texto]);
+    res.json({ ok: true, id: r.insertId });
+  } catch (e) {
+    console.error("MYSQL ERROR POST:", e);
+    res.status(500).json({ error: "Error insertando en MySQL", code: e.code, message: e.message });
+  }
+});
+
 
 // ✅ PRUEBA SQL
 app.get("/api/envcheck", (req, res) => {

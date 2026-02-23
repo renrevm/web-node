@@ -7,6 +7,24 @@
 
 <h1>🚀 Mi primera Web App Node1</h1>
 
+<hr>
+<h2>Guardar mensaje</h2>
+<input id="txt" placeholder="Escribe un mensaje" />
+<button id="btnGuardar">Guardar</button>
+<pre id="out"></pre>
+
+<script>
+document.getElementById("btnGuardar").onclick = async () => {
+  const texto = document.getElementById("txt").value;
+  const res = await fetch("/api/mensajes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ texto })
+  });
+  document.getElementById("out").innerText = await res.text();
+};
+</script>
+
 <button onclick="probar()">Probar API</button>
 
 <pre id="resultado"></pre>
