@@ -36,6 +36,27 @@ app.post("/api/mensajes", async (req, res) => {
   }
 });
 
+// ✅ DELETE mensaje por id
+app.delete("/api/mensajes/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ error: "id inválido" });
+    }
+
+    const [r] = await pool.query("DELETE FROM mensajes WHERE id = ?", [id]);
+
+    // mysql2 devuelve affectedRows
+    if (r.affectedRows === 0) {
+      return res.status(404).json({ error: "mensaje no encontrado" });
+    }
+
+    res.json({ ok: true, deletedId: id });
+  } catch (e) {
+    console.error("MYSQL ERROR DELETE:", e);
+    res.status(500).json({ error: "Error eliminando en MySQL", code: e.code, message: e.message });
+  }
+});
 
 // ✅ PRUEBA SQL
 app.get("/api/envcheck", (req, res) => {

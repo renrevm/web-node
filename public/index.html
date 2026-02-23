@@ -33,6 +33,8 @@
     .ok { color: #0a7a2f; }
     .err { color: #b00020; }
     .muted { color: #666; font-size: 13px; }
+    .del { background: #ffecec; color:#7a1d1d; border:1px solid #ffd0d0; padding: 10px 12px; border-radius: 10px; }
+    .del:hover { filter: brightness(.98); }
   </style>
 </head>
 <body>
@@ -95,6 +97,7 @@
             <div class="id">#${m.id}</div>
             <div class="txt">${escapeHtml(m.texto)}</div>
             <div class="dt">${formatFecha(m.creado_en)}</div>
+            <button class="del" data-id="${m.id}" title="Eliminar">🗑️</button>
           </div>
         `).join("");
 
@@ -105,6 +108,28 @@
         setEstado("error cargando mensajes", "err");
       } finally {
         $("btnRefrescar").disabled = false;
+      }
+    }
+
+    async function borrarMensaje(id) {
+      if (!confirm("¿Eliminar el mensaje #" + id + "?")) return;
+
+      setEstado("eliminando…", "muted");
+      try {
+        const res = await fetch("/api/mensajes/" + id, { method: "DELETE" });
+        const txt = await res.text();
+
+        if (!res.ok) {
+          console.error("DELETE error:", txt);
+          setEstado("error eliminando: " + txt, "err");
+          return;
+        }
+
+        setEstado("eliminado ✅", "ok");
+        await cargarMensajes();
+      } catch (e) {
+        console.error(e);
+        setEstado("error eliminando", "err");
       }
     }
 
@@ -149,6 +174,12 @@
 
     // Carga inicial
     cargarMensajes();
+    document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".del");
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    borrarMensaje(id);
+  });
   </script>
 </body>
 </html>
