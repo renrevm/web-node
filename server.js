@@ -28,35 +28,38 @@ app.post("/api/mensajes", async (req, res) => {
     const texto = (req.body?.texto || "").trim();
     if (!texto) return res.status(400).json({ error: "texto requerido" });
 
-    const ip = getClientIp(req);
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-    // ✅ bloquear si ya envió en la última hora
+    // 🔎 Verificar último mensaje desde esta IP en la última hora
     const [rows] = await pool.query(
-      `SELECT id, creado_en
-       FROM mensajes
-       WHERE ip = ?
-         AND creado_en >= (NOW() - INTERVAL 1 HOUR)
-       ORDER BY creado_en DESC
-       LIMIT 1`,
+      `
+      SELECT creado_en
+      FROM mensajes
+      WHERE ip = ?
+        AND creado_en >= NOW() - INTERVAL 1 HOUR
+      ORDER BY creado_en DESC
+      LIMIT 1
+      `,
       [ip]
     );
 
     if (rows.length > 0) {
       return res.status(429).json({
-        error: "Solo puedes enviar 1 mensaje por hora",
-        ultimo: rows[0].creado_en
+        error: "Oye waton, solo puedes enviar 1 mensaje por hora"
       });
     }
 
-    const [r] = await pool.query(
+    // ✅ Insertar mensaje
+    await pool.query(
       "INSERT INTO mensajes(texto, ip) VALUES(?, ?)",
       [texto, ip]
     );
 
-    res.json({ ok: true, id: r.insertId });
+    res.json({ ok: true });
+
   } catch (e) {
-    console.error("POST /api/mensajes ERROR:", e);
-    res.status(500).json({ error: "Error insertando mensaje", code: e.code, message: e.message });
+    console.error("POST ERROR:", e);
+    res.status(500).json({ error: "Error insertando mensaje" });
   }
 });
 
