@@ -4,6 +4,15 @@ const pool = require("./src/db");
 
 const app = express();
 
+function getClientIp(req) {
+  const xff = req.headers["x-forwarded-for"];
+  if (xff) {
+    // "client, proxy1, proxy2" -> "client"
+    return String(xff).split(",")[0].trim();
+  }
+  return req.socket?.remoteAddress || req.ip || "";
+}
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
