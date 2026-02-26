@@ -45,7 +45,7 @@ app.post("/api/mensajes", async (req, res) => {
 
     if (rows.length > 0) {
       return res.status(429).json({
-        error: "Oye waton, solo puedes enviar 1 mensaje por hora"
+        error: "Solo puedes enviar 1 mensaje por hora"
       });
     }
 
